@@ -77,20 +77,25 @@ class AssessmentQuestionsView(views.APIView):
                 import logging
                 logging.getLogger(__name__).error(f"Auto-seed question bank error: {e}")
 
+        # Ensure all core psychometric questions are marked for ALL audiences so Intermediate (FSc/ICS) students have full access
+        if qs.filter(target_audience=Question.TargetAudienceChoice.ALL).count() == 0:
+            Question.objects.filter(is_active=True).update(target_audience=Question.TargetAudienceChoice.ALL)
+            qs = Question.objects.filter(is_active=True)
+
         grade = student.current_grade if student else ''
 
         target_qs = qs
         if 'MATRIC' in grade or 'O_LEVELS' in grade:
             filtered = target_qs.filter(target_audience__in=[Question.TargetAudienceChoice.ALL, Question.TargetAudienceChoice.MATRIC])
-            if filtered.exists():
+            if filtered.count() >= 10:
                 target_qs = filtered
         elif 'INTER' in grade or 'A_LEVELS' in grade or 'UNDERGRADUATE' in grade:
             filtered = target_qs.filter(target_audience__in=[Question.TargetAudienceChoice.ALL, Question.TargetAudienceChoice.INTER])
-            if filtered.exists():
+            if filtered.count() >= 10:
                 target_qs = filtered
 
-        # If audience filter yielded no items, safely fall back to all active questions
-        if not target_qs.exists() and qs.exists():
+        # If audience filter yielded no items or fewer than 10 items, safely fall back to all active questions
+        if target_qs.count() == 0 and qs.exists():
             target_qs = qs
 
         questions = target_qs.order_by('category', 'order', 'created_at')

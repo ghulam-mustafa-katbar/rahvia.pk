@@ -474,6 +474,9 @@ class Command(BaseCommand):
                 qdata['correct_answer'] = ''
                 qdata['correct_answer_weight'] = 0.0
 
+            # Ensure all questions are accessible across Matric (9-10) and Intermediate (11-12) streams
+            qdata['target_audience'] = Question.TargetAudienceChoice.ALL
+
             q_id = qdata.get('question_id')
             if q_id:
                 Question.objects.update_or_create(
