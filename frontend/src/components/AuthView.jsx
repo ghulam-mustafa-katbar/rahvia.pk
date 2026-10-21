@@ -27,21 +27,6 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
 
   const isUrdu = language === 'ur';
 
-  const handleDemoFill = (type) => {
-    setIsRegister(false);
-    setError(null);
-    if (type === 'student') {
-      setEmail('student@rahvia.pk');
-      setPassword('Password123!');
-    } else if (type === 'counselor') {
-      setEmail('counselor@rahvia.pk');
-      setPassword('Password123!');
-    } else if (type === 'admin') {
-      setEmail('admin@rahvia.pk');
-      setPassword('Password123!');
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -133,36 +118,6 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
           </button>
         </div>
 
-        {/* Quick Demo Pre-fill Pills */}
-        <div className="bg-emerald-50/70 p-3 rounded-2xl border border-emerald-200/80">
-          <p className="text-[11px] font-bold text-emerald-900 mb-2">
-            🚀 Quick Demo Login Accounts:
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              type="button"
-              onClick={() => handleDemoFill('student')}
-              className="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-lg border border-emerald-300 shadow-2xs"
-            >
-              Student (Aisha Khan)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDemoFill('counselor')}
-              className="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-lg border border-emerald-300 shadow-2xs"
-            >
-              School Counselor (Dr. Tariq)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDemoFill('admin')}
-              className="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-lg border border-emerald-300 shadow-2xs"
-            >
-              Super Admin
-            </button>
-          </div>
-        </div>
-
         {error && (
           <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-semibold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
@@ -251,7 +206,8 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="student@example.com"
+                placeholder="name@example.com"
+                autoComplete="email"
                 className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
                 required
               />
@@ -271,6 +227,7 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={isRegister ? "Minimum 6 characters" : "Enter password"}
                 minLength={isRegister ? 6 : undefined}
+                autoComplete={isRegister ? "new-password" : "current-password"}
                 className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
                 required
               />
