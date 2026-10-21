@@ -1,0 +1,646 @@
+/* ==============================================================================
+   RAHVIA PLATFORM - MODERN EXECUTIVE DJANGO ADMIN THEME
+   Tailored for EdTech & Psychometric Operations
+   ============================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+:root {
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-dark: #064e3b;
+  --primary-light: #ecfdf5;
+  --accent: #f59e0b;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --slate-50: #f8fafc;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #0284c7;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  background-color: #f8fafc !important;
+  color: var(--slate-800) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==============================================================================
+   1. NAVIGATION HEADER
+   ============================================================================== */
+
+#header {
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%) !important;
+  color: #ffffff !important;
+  padding: 14px 28px !important;
+  border-bottom: 3px solid #10b981 !important;
+  box-shadow: 0 4px 20px -2px rgba(6, 78, 59, 0.25) !important;
+}
+
+#header #branding h1 {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 !important;
+}
+
+#header #branding h1 a:link,
+#header #branding h1 a:visited {
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  text-decoration: none !important;
+}
+
+#header #user-tools {
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+#header #user-tools a {
+  color: #a7f3d0 !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+}
+
+#header #user-tools a:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+/* Custom Portal Header Action Pills */
+.rahvia-header-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-left: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rahvia-quick-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #10b981;
+  color: #ffffff !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.rahvia-quick-link:hover {
+  background-color: #059669 !important;
+  transform: translateY(-1px);
+}
+
+/* ==============================================================================
+   2. BREADCRUMBS
+   ============================================================================== */
+
+div.breadcrumbs {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--slate-200) !important;
+  padding: 12px 28px !important;
+  font-size: 0.85rem !important;
+  color: var(--slate-500) !important;
+  font-weight: 500 !important;
+}
+
+div.breadcrumbs a {
+  color: var(--primary) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+div.breadcrumbs a:hover {
+  color: var(--primary-hover) !important;
+  text-decoration: underline !important;
+}
+
+/* ==============================================================================
+   3. DASHBOARD KPIS & METRIC CARDS
+   ============================================================================== */
+
+.rahvia-kpi-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.rahvia-kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.rahvia-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+}
+
+.rahvia-kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), #10b981);
+}
+
+.rahvia-kpi-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--slate-500);
+  margin-bottom: 6px;
+}
+
+.rahvia-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  line-height: 1.2;
+}
+
+.rahvia-kpi-meta {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--success);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ==============================================================================
+   4. MODULE / APP TABLES & CARDS
+   ============================================================================== */
+
+.module {
+  background: #ffffff !important;
+  border: 1px solid var(--slate-200) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  margin-bottom: 24px !important;
+  overflow: hidden !important;
+}
+
+.module caption,
+.module h2 {
+  background: var(--slate-50) !important;
+  color: var(--slate-900) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  padding: 14px 20px !important;
+  border-bottom: 1px solid var(--slate-200) !important;
+  letter-spacing: -0.01em !important;
+}
+
+.module table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.module th,
+.module td {
+  padding: 12px 20px !important;
+  font-size: 0.875rem !important;
+  border-bottom: 1px solid var(--slate-100) !important;
+}
+
+.module th {
+  font-weight: 600 !important;
+  color: var(--slate-700) !important;
+}
+
+.module tr:last-child td,
+.module tr:last-child th {
+  border-bottom: none !important;
+}
+
+.module tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Action button inside tables */
+.module .addlink,
+.module .changelink {
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.module .addlink {
+  color: var(--primary) !important;
+  background-color: var(--primary-light) !important;
+}
+
+.module .addlink:hover {
+  background-color: #d1fae5 !important;
+}
+
+.module .changelink {
+  color: var(--slate-600) !important;
+  background-color: var(--slate-100) !important;
+}
+
+.module .changelink:hover {
+  background-color: var(--slate-200) !important;
+}
+
+/* ==============================================================================
+   5. CHANGE LIST / DATA TABLES
+   ============================================================================== */
+
+#changelist {
+  background: #ffffff !important;
+  border: 1px solid var(--slate-200) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  overflow: hidden !important;
+  margin-top: 16px !important;
+}
+
+#changelist table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+#changelist thead th {
+  background: var(--slate-50) !important;
+  color: var(--slate-700) !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 12px 16px !important;
+  border-bottom: 2px solid var(--slate-200) !important;
+}
+
+#changelist thead th a {
+  color: var(--slate-700) !important;
+  text-decoration: none !important;
+}
+
+#changelist tbody td,
+#changelist tbody th {
+  padding: 14px 16px !important;
+  font-size: 0.875rem !important;
+  border-bottom: 1px solid var(--slate-100) !important;
+  vertical-align: middle !important;
+}
+
+#changelist tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Search bar and Filters */
+#toolbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--slate-200) !important;
+  padding: 14px 20px !important;
+}
+
+#changelist-search input[type="text"] {
+  border: 1px solid var(--slate-200) !important;
+  border-radius: 8px !important;
+  padding: 8px 14px !important;
+  font-size: 0.875rem !important;
+  font-family: inherit !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+#changelist-search input[type="text"]:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+}
+
+#changelist-search input[type="submit"] {
+  background: var(--primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+}
+
+#changelist-search input[type="submit"]:hover {
+  background: var(--primary-hover) !important;
+}
+
+#changelist-filter {
+  background: #fafafa !important;
+  border-left: 1px solid var(--slate-200) !important;
+  padding: 16px !important;
+}
+
+#changelist-filter h2 {
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: var(--slate-900) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  background: transparent !important;
+  padding: 0 0 10px 0 !important;
+  border-bottom: 1px solid var(--slate-200) !important;
+}
+
+#changelist-filter h3 {
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  color: var(--slate-600) !important;
+  margin-top: 14px !important;
+}
+
+#changelist-filter a {
+  color: var(--slate-600) !important;
+  font-size: 0.8rem !important;
+  text-decoration: none !important;
+}
+
+#changelist-filter a:hover {
+  color: var(--primary) !important;
+}
+
+#changelist-filter li.selected a {
+  color: var(--primary) !important;
+  font-weight: 700 !important;
+}
+
+/* ==============================================================================
+   6. BUTTONS & ACTIONS
+   ============================================================================== */
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2) !important;
+  transition: all 0.15s ease !important;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.submit-row input:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3) !important;
+}
+
+.button.default,
+input[type="submit"].default {
+  background: linear-gradient(135deg, #047857 0%, #064e3b 100%) !important;
+}
+
+/* Danger / Delete button */
+.deletelink {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.deletelink:hover {
+  background: #fecaca !important;
+}
+
+/* ==============================================================================
+   7. FORM FIELDS & FIELDSETS
+   ============================================================================== */
+
+fieldset {
+  background: #ffffff !important;
+  border: 1px solid var(--slate-200) !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+fieldset h2 {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: var(--slate-900) !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--slate-100) !important;
+  padding-bottom: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+textarea,
+select {
+  border: 1px solid var(--slate-200) !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 0.875rem !important;
+  font-family: inherit !important;
+  color: var(--slate-900) !important;
+  background-color: #ffffff !important;
+  transition: all 0.2s ease !important;
+  box-sizing: border-box !important;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+}
+
+/* ==============================================================================
+   8. MODERN LOGIN PAGE OVERHAUL
+   ============================================================================== */
+
+body.login {
+  background: radial-gradient(circle at 50% 20%, #ecfdf5 0%, #f1f5f9 60%, #e2e8f0 100%) !important;
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 20px !important;
+}
+
+body.login #container {
+  width: 100% !important;
+  max-width: 440px !important;
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--slate-200) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  overflow: hidden !important;
+  margin: 0 auto !important;
+}
+
+body.login #header {
+  background: linear-gradient(135deg, #064e3b 0%, #047857 100%) !important;
+  padding: 28px 24px !important;
+  text-align: center !important;
+  border-bottom: 3px solid #10b981 !important;
+}
+
+body.login #header #branding h1 {
+  font-size: 1.35rem !important;
+  font-weight: 800 !important;
+  margin: 0 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body.login #content {
+  padding: 32px 28px !important;
+}
+
+body.login .form-row {
+  margin-bottom: 20px !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+body.login .form-row label {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: var(--slate-700) !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+body.login input[type="text"],
+body.login input[type="password"] {
+  width: 100% !important;
+  padding: 12px 14px !important;
+}
+
+body.login .submit-row {
+  margin-top: 24px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  text-align: center !important;
+}
+
+body.login .submit-row input[type="submit"] {
+  width: 100% !important;
+  padding: 12px 20px !important;
+  font-size: 0.95rem !important;
+}
+
+/* ==============================================================================
+   9. CUSTOM BADGES FOR ROLES, BOARDS, & STATUSES
+   ============================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  line-height: 1.2;
+}
+
+.badge-student {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.badge-counselor {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+
+.badge-admin {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-success {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.badge-warning {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.badge-danger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}

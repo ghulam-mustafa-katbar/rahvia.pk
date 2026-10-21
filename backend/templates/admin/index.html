@@ -1,0 +1,42 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div id="content-main">
+    <!-- Executive KPI Banner -->
+    <div class="rahvia-kpi-container">
+        <div class="rahvia-kpi-card">
+            <div class="rahvia-kpi-label">Platform Core</div>
+            <div class="rahvia-kpi-value" style="color: #059669;">Django 6.1</div>
+            <div class="rahvia-kpi-meta">
+                <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+                PostgreSQL & Redis Online
+            </div>
+        </div>
+        <div class="rahvia-kpi-card">
+            <div class="rahvia-kpi-label">Pakistani Career Taxonomy</div>
+            <div class="rahvia-kpi-value" style="color: #0284c7;">500+</div>
+            <div class="rahvia-kpi-meta" style="color: #0284c7;">
+                Pre-Eng, Pre-Med, ICS, I.Com
+            </div>
+        </div>
+        <div class="rahvia-kpi-card">
+            <div class="rahvia-kpi-label">Assessment Engine</div>
+            <div class="rahvia-kpi-value" style="color: #7e22ce;">RIASEC</div>
+            <div class="rahvia-kpi-meta" style="color: #7e22ce;">
+                Cognitive Aptitude & Interest
+            </div>
+        </div>
+        <div class="rahvia-kpi-card">
+            <div class="rahvia-kpi-label">Compliance & Privacy</div>
+            <div class="rahvia-kpi-value" style="color: #f59e0b;">PDPA</div>
+            <div class="rahvia-kpi-meta" style="color: #f59e0b;">
+                Parental Consent Tracking
+            </div>
+        </div>
+    </div>
+
+    <!-- Original Django App List -->
+    {{ block.super }}
+</div>
+{% endblock %}
