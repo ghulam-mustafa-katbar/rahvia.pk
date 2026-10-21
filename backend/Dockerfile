@@ -37,4 +37,5 @@ ENV DJANGO_SETTINGS_MODULE=rahvia_project.settings
 EXPOSE 8000
 
 # Shell form permits dynamic resolution of $PORT on Render (default 10000) or local (8000)
-CMD gunicorn rahvia_project.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3 --timeout 120
+# Automatically runs pending migrations and idempotent seed data before starting Gunicorn
+CMD ["/bin/sh", "-c", "python manage.py migrate --noinput && python manage.py seed_data && gunicorn rahvia_project.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3 --timeout 120"]

@@ -37,9 +37,9 @@ class AssessmentStartView(views.APIView):
                     defaults={
                         'name': user.get_full_name() or user.email.split('@')[0],
                         'school': default_school,
-                        'current_grade': Student.GradeChoice.MATRIC_10,
-                        'elective_group': Student.ElectiveChoice.SCIENCE_COMPUTER,
-                        'board': 'BIEK Karachi'
+                        'current_grade': Student.GradeChoice.MATRIC_10TH,
+                        'elective_group': Student.ElectiveGroupChoice.SCIENCE_CS,
+                        'board': 'FBISE Islamabad'
                     }
                 )
 
@@ -66,16 +66,34 @@ class AssessmentQuestionsView(views.APIView):
         session = get_object_or_404(AssessmentSession, assessment_id=assessment_id)
         student = session.student
 
-        # Dynamic question assembly based on grade & assessment type
+        # Ensure questions exist in database (auto-seed if freshly initialized production database)
         qs = Question.objects.filter(is_active=True)
-        grade = student.current_grade
+        if not qs.exists():
+            from django.core.management import call_command
+            try:
+                call_command('seed_data')
+                qs = Question.objects.filter(is_active=True)
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).error(f"Auto-seed question bank error: {e}")
 
-        if 'MATRIC' in grade:
-            qs = qs.filter(target_audience__in=[Question.TargetAudienceChoice.ALL, Question.TargetAudienceChoice.MATRIC])
-        elif 'INTER' in grade or 'A_LEVELS' in grade:
-            qs = qs.filter(target_audience__in=[Question.TargetAudienceChoice.ALL, Question.TargetAudienceChoice.INTER])
+        grade = student.current_grade if student else ''
 
-        questions = qs.order_by('category', 'order', 'created_at')
+        target_qs = qs
+        if 'MATRIC' in grade or 'O_LEVELS' in grade:
+            filtered = target_qs.filter(target_audience__in=[Question.TargetAudienceChoice.ALL, Question.TargetAudienceChoice.MATRIC])
+            if filtered.exists():
+                target_qs = filtered
+        elif 'INTER' in grade or 'A_LEVELS' in grade or 'UNDERGRADUATE' in grade:
+            filtered = target_qs.filter(target_audience__in=[Question.TargetAudienceChoice.ALL, Question.TargetAudienceChoice.INTER])
+            if filtered.exists():
+                target_qs = filtered
+
+        # If audience filter yielded no items, safely fall back to all active questions
+        if not target_qs.exists() and qs.exists():
+            target_qs = qs
+
+        questions = target_qs.order_by('category', 'order', 'created_at')
         serializer = QuestionSerializer(questions, many=True)
         return Response({
             'assessment_id': str(session.assessment_id),
