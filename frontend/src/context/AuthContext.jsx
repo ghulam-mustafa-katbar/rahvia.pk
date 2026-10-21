@@ -99,6 +99,11 @@ export const AuthProvider = ({ children }) => {
     setStudentId(null);
   };
 
+  const updateUser = (userData) => {
+    setUser(userData);
+    localStorage.setItem('rahvia_user', JSON.stringify(userData));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -110,6 +115,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        updateUser,
         isAuthenticated: !!user,
         isStudent: user?.role === 'STUDENT',
         isCounselor: user?.role === 'COUNSELOR',

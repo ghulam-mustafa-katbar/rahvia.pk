@@ -113,6 +113,12 @@ export const api = {
   getCurrentUser: async () => {
     return request('/auth/me');
   },
+  updateCurrentUser: async (userData) => {
+    return request('/auth/me', {
+      method: 'PATCH',
+      body: JSON.stringify(userData),
+    });
+  },
 
   // Student Profile
   getProfile: async () => {

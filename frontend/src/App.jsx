@@ -6,6 +6,7 @@ import { AssessmentRunner } from './components/StudentPortal/AssessmentRunner';
 import { ReportView } from './components/StudentPortal/ReportView';
 import { CareerLibraryView } from './components/CareerLibrary/CareerLibraryView';
 import { SchoolDashboardView } from './components/SchoolDashboard/SchoolDashboardView';
+import { CounselorProfileView } from './components/SchoolDashboard/CounselorProfileView';
 import { StudentProfileView } from './components/StudentPortal/StudentProfileView';
 import { AdminConsoleView } from './components/AdminConsole/AdminConsoleView';
 import { AuthView } from './components/AuthView';
@@ -99,6 +100,12 @@ function MainApp() {
       case 'profile':
         if (!isAuthenticated) {
           return <AuthView onSuccess={() => setCurrentView('profile')} />;
+        }
+        if (user?.role === 'COUNSELOR') {
+          return <CounselorProfileView onOpenDashboard={() => setCurrentView('school')} />;
+        }
+        if (user?.role === 'ADMIN' || user?.is_staff) {
+          return <AdminConsoleView />;
         }
         return <StudentProfileView />;
 

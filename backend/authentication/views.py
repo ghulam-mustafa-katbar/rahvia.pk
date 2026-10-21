@@ -52,4 +52,23 @@ class CurrentUserView(views.APIView):
         data = UserDetailSerializer(user).data
         if hasattr(user, 'student_profile'):
             data['student_id'] = str(user.student_profile.student_id)
+        if user.role == User.Role.COUNSELOR:
+            from schools.serializers import SchoolSerializer
+            assigned = user.schools.all()
+            data['assigned_schools'] = SchoolSerializer(assigned, many=True).data
         return Response(data)
+
+    def patch(self, request):
+        user = request.user
+        serializer = UserDetailSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            data = serializer.data
+            if hasattr(user, 'student_profile'):
+                data['student_id'] = str(user.student_profile.student_id)
+            if user.role == User.Role.COUNSELOR:
+                from schools.serializers import SchoolSerializer
+                assigned = user.schools.all()
+                data['assigned_schools'] = SchoolSerializer(assigned, many=True).data
+            return Response(data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
