@@ -149,6 +149,20 @@ export const SchoolDashboardView = ({ onViewStudentReport }) => {
           <div className="w-10 h-10 border-4 border-emerald-200 border-t-emerald-700 rounded-full animate-spin mx-auto mb-2" />
           <p className="text-slate-500 text-sm">Aggregating cohort psychometrics...</p>
         </div>
+      ) : schools.length === 0 ? (
+        <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-xs max-w-xl mx-auto space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200">
+            <SchoolIcon className="w-8 h-8" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-800">
+            {isUrdu ? 'کوئی ادارہ آپ کے پروفائل سے منسلک نہیں ہے' : 'No Institution Assigned Yet'}
+          </h3>
+          <p className="text-sm text-slate-500">
+            {isUrdu 
+              ? 'آپ کے کونسلر اکاؤنٹ کو ابھی تک کسی اسکول یا کالج سے منسلک نہیں کیا گیا۔ براہ کرم اپنے ایڈمن سے رابطہ کریں یا اپنا اسکول کوڈ تصدیق کرائیں۔' 
+              : 'Your counselor account is not yet assigned to an institution. Please contact the platform admin at admin@rahvia.pk to link your school code.'}
+          </p>
+        </div>
       ) : (
         <>
           {/* Key Metrics Grid */}

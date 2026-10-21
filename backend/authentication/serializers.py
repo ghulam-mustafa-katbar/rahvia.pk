@@ -14,6 +14,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     board = serializers.CharField(write_only=True, required=False, default='FBISE Islamabad')
     elective_group = serializers.CharField(write_only=True, required=False, default='SCIENCE_CS')
     school_code = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    institution_name = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    institution_city = serializers.CharField(write_only=True, required=False, allow_blank=True)
     
     # Guardian consent (PDPA compliance)
     parent_guardian_name = serializers.CharField(required=False, allow_blank=True)
@@ -27,7 +29,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'id', 'email', 'password', 'first_name', 'last_name', 'role',
             'phone_number', 'parent_guardian_name', 'parent_guardian_email',
             'parent_guardian_phone', 'parent_consent_granted',
-            'name', 'grade', 'board', 'elective_group', 'school_code'
+            'name', 'grade', 'board', 'elective_group', 'school_code',
+            'institution_name', 'institution_city'
         ]
 
     def create(self, validated_data):
@@ -37,6 +40,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         board = validated_data.pop('board', 'FBISE Islamabad')
         elective_group = validated_data.pop('elective_group', 'SCIENCE_CS')
         school_code = validated_data.pop('school_code', None)
+        institution_name = validated_data.pop('institution_name', None)
+        institution_city = validated_data.pop('institution_city', None)
 
         request = self.context.get('request')
         ip_addr = None
@@ -67,6 +72,28 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
                 elective_group=elective_group,
                 parent_consent=user.parent_consent_granted
             )
+        elif user.role == User.Role.COUNSELOR:
+            # Associate counselor with their designated institution
+            target_school = None
+            if school_code:
+                target_school = School.objects.filter(code__iexact=school_code.strip()).first()
+            if not target_school and institution_name:
+                target_school = School.objects.filter(name__iexact=institution_name.strip()).first()
+                if not target_school:
+                    # Create school record for this new institution
+                    base_code = "".join(c for c in institution_name.upper() if c.isalnum())[:8] or "SCH"
+                    code_candidate = f"{base_code}-{str(user.id)[:6].upper()}"
+                    target_school = School.objects.create(
+                        name=institution_name.strip(),
+                        code=code_candidate,
+                        city=institution_city.strip() if institution_city else 'National',
+                        board=board if board else School.BoardChoice.FBISE_ISLAMABAD,
+                        contact_email=user.email,
+                        verified=False
+                    )
+            if target_school:
+                target_school.counselor = user
+                target_school.save()
 
         return user
 

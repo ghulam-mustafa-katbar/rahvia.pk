@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../api/client';
 import { 
   Lock, Mail, User, ShieldCheck, CheckCircle2, 
   ArrowRight, AlertCircle, Compass, School 
@@ -15,7 +16,10 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
   const [grade, setGrade] = useState('MATRIC_10TH');
   const [board, setBoard] = useState('FBISE Islamabad');
   const [electiveGroup, setElectiveGroup] = useState('SCIENCE_CS');
-  const [schoolCode, setSchoolCode] = useState('IMC-G-F72');
+  const [schoolCode, setSchoolCode] = useState('');
+  const [availableSchools, setAvailableSchools] = useState([]);
+  const [customInstitutionName, setCustomInstitutionName] = useState('');
+  const [customInstitutionCity, setCustomInstitutionCity] = useState('');
 
   // Guardian consent fields (PDPA compliance)
   const [guardianName, setGuardianName] = useState('');
@@ -26,6 +30,19 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
   const [error, setError] = useState(null);
 
   const isUrdu = language === 'ur';
+
+  useEffect(() => {
+    const fetchSchools = async () => {
+      try {
+        const res = await api.getSchools('all=true');
+        const list = Array.isArray(res) ? res : (res?.results || []);
+        setAvailableSchools(list);
+      } catch (err) {
+        console.warn('Could not load schools list for registration', err);
+      }
+    };
+    fetchSchools();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,10 +64,12 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
           name,
           first_name: name.split(' ')[0] || '',
           last_name: name.split(' ').slice(1).join(' ') || '',
-          grade,
+          grade: role === 'STUDENT' ? grade : '',
           board,
-          elective_group: electiveGroup,
-          school_code: schoolCode,
+          elective_group: role === 'STUDENT' ? electiveGroup : '',
+          school_code: schoolCode === 'CUSTOM' ? '' : schoolCode,
+          institution_name: schoolCode === 'CUSTOM' ? customInstitutionName : '',
+          institution_city: schoolCode === 'CUSTOM' ? customInstitutionCity : '',
           parent_guardian_name: guardianName,
           parent_guardian_email: guardianEmail,
           parent_consent_granted: parentConsent,
@@ -167,32 +186,126 @@ export const AuthView = ({ defaultTab = 'login', onSuccess }) => {
               </div>
 
               {role === 'STUDENT' && (
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block font-bold text-slate-700 mb-1">Grade</label>
-                    <select
-                      value={grade}
-                      onChange={(e) => setGrade(e.target.value)}
-                      className="w-full p-2 rounded-xl border border-slate-200 bg-slate-50"
-                    >
-                      <option value="MATRIC_9TH">Matric 9th</option>
-                      <option value="MATRIC_10TH">Matric 10th</option>
-                      <option value="INTER_11TH">Inter 1st Year (11th)</option>
-                      <option value="INTER_12TH">Inter 2nd Year (12th)</option>
-                      <option value="O_LEVELS">O-Levels</option>
-                      <option value="A_LEVELS">A-Levels</option>
-                    </select>
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Grade</label>
+                      <select
+                        value={grade}
+                        onChange={(e) => setGrade(e.target.value)}
+                        className="w-full p-2 rounded-xl border border-slate-200 bg-slate-50"
+                      >
+                        <option value="MATRIC_9TH">Matric 9th</option>
+                        <option value="MATRIC_10TH">Matric 10th</option>
+                        <option value="INTER_11TH">Inter 1st Year (11th)</option>
+                        <option value="INTER_12TH">Inter 2nd Year (12th)</option>
+                        <option value="O_LEVELS">O-Levels</option>
+                        <option value="A_LEVELS">A-Levels</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Board</label>
+                      <input
+                        type="text"
+                        value={board}
+                        onChange={(e) => setBoard(e.target.value)}
+                        className="w-full p-2 rounded-xl border border-slate-200"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">Board</label>
-                    <input
-                      type="text"
-                      value={board}
-                      onChange={(e) => setBoard(e.target.value)}
-                      className="w-full p-2 rounded-xl border border-slate-200"
-                    />
+                    <label className="block font-bold text-slate-700 mb-1">
+                      {isUrdu ? 'اسکول یا کالج (اختیاری)' : 'School or College (Optional)'}
+                    </label>
+                    <select
+                      value={schoolCode}
+                      onChange={(e) => setSchoolCode(e.target.value)}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800"
+                    >
+                      <option value="">{isUrdu ? '-- آزاد امیدوار / کوئی اسکول نہیں --' : '-- Independent Candidate / Unassigned --'}</option>
+                      {availableSchools.map((s) => (
+                        <option key={s.school_id} value={s.code}>
+                          {s.name} ({s.city})
+                        </option>
+                      ))}
+                    </select>
                   </div>
+                </>
+              )}
+
+              {role === 'COUNSELOR' && (
+                <div className="space-y-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                  <div className="flex items-center gap-1.5 font-bold text-slate-800 text-xs">
+                    <School className="w-4 h-4 text-emerald-700" />
+                    <span>{isUrdu ? 'آپ کا تعلیمی ادارہ (اسکول یا کالج)' : 'Your Designated School or College'}</span>
+                  </div>
+
+                  <div>
+                    <label className="block font-medium text-slate-600 mb-1">
+                      {isUrdu ? 'ادارہ منتخب کریں' : 'Select Registered Institution'}
+                    </label>
+                    <select
+                      value={schoolCode}
+                      onChange={(e) => setSchoolCode(e.target.value)}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
+                      required
+                    >
+                      <option value="">{isUrdu ? '-- فہرست سے اسکول منتخب کریں --' : '-- Choose your institution --'}</option>
+                      {availableSchools.map((s) => (
+                        <option key={s.school_id} value={s.code}>
+                          {s.name} ({s.city}) - [{s.code}]
+                        </option>
+                      ))}
+                      <option value="CUSTOM">{isUrdu ? '+ میرا ادارہ فہرست میں نہیں ہے (نیا درج کریں)' : '+ Institution not listed (Enter new)'}</option>
+                    </select>
+                  </div>
+
+                  {schoolCode === 'CUSTOM' && (
+                    <div className="space-y-2 pt-2 border-t border-slate-200">
+                      <div>
+                        <label className="block font-medium text-slate-600 mb-1">
+                          {isUrdu ? 'اسکول یا کالج کا مکمل نام' : 'Institution Full Name'}
+                        </label>
+                        <input
+                          type="text"
+                          value={customInstitutionName}
+                          onChange={(e) => setCustomInstitutionName(e.target.value)}
+                          placeholder="e.g. Government Degree College"
+                          className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block font-medium text-slate-600 mb-1">
+                            {isUrdu ? 'شہر' : 'City'}
+                          </label>
+                          <input
+                            type="text"
+                            value={customInstitutionCity}
+                            onChange={(e) => setCustomInstitutionCity(e.target.value)}
+                            placeholder="e.g. Karachi / Sukkur"
+                            className="w-full p-2 rounded-xl border border-slate-200 bg-white text-xs"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-medium text-slate-600 mb-1">
+                            {isUrdu ? 'تعلیمی بورڈ' : 'Affiliated Board'}
+                          </label>
+                          <input
+                            type="text"
+                            value={board}
+                            onChange={(e) => setBoard(e.target.value)}
+                            placeholder="e.g. BISE Karachi"
+                            className="w-full p-2 rounded-xl border border-slate-200 bg-white text-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </>

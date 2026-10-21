@@ -11,15 +11,34 @@ from recommendations.models import Report
 from authentication.models import User
 
 class SchoolListView(generics.ListCreateAPIView):
-    queryset = School.objects.all().order_by('name')
     serializer_class = SchoolSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        user = self.request.user
+        # If requested with ?all=true or unauthenticated, return all institutions (e.g. for registration dropdown)
+        if self.request.query_params.get('all') == 'true' or not user.is_authenticated:
+            return School.objects.all().order_by('name')
+        
+        # If user is a Counselor, strictly return ONLY their assigned institution(s)
+        if hasattr(user, 'role') and user.role == User.Role.COUNSELOR:
+            return School.objects.filter(counselor=user).order_by('name')
+        
+        # Admins and other staff see all
+        return School.objects.all().order_by('name')
 
 class SchoolDashboardView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, school_id):
         school = get_object_or_404(School, school_id=school_id)
+
+        # Multi-Tenant Privacy Isolation: Counselors can only inspect their own institution
+        if request.user.role == User.Role.COUNSELOR and school.counselor != request.user and not request.user.is_staff:
+            return Response(
+                {'error': 'Unauthorized: You are only permitted to access analytics for your designated institution.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
         students = Student.objects.filter(school=school).select_related('user')
         total_students = students.count()
 
@@ -76,6 +95,14 @@ class SchoolBatchEnrollView(views.APIView):
 
     def post(self, request, school_id):
         school = get_object_or_404(School, school_id=school_id)
+
+        # Multi-Tenant Privacy Isolation: Counselors can only enroll into their own institution
+        if request.user.role == User.Role.COUNSELOR and school.counselor != request.user and not request.user.is_staff:
+            return Response(
+                {'error': 'Unauthorized: You are only permitted to enroll students into your designated institution.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         student_items = request.data.get('students', [])
         if not isinstance(student_items, list) or not student_items:
             return Response({'error': 'Expected a non-empty list of students.'}, status=status.HTTP_400_BAD_REQUEST)

@@ -154,8 +154,9 @@ export const api = {
   },
 
   // School Counselor & Cohort Analytics
-  getSchools: async () => {
-    return request('/schools/');
+  getSchools: async (query = '') => {
+    const qs = query ? (query.startsWith('?') ? query : `?${query}`) : '';
+    return request(`/schools/${qs}`);
   },
   getSchoolDashboard: async (schoolId) => {
     return request(`/school/${schoolId}/dashboard`);
