@@ -59,8 +59,26 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         # If user registered as student, create Student profile automatically
         if user.role == User.Role.STUDENT:
             school = None
-            if school_code:
+            if school_code and school_code.strip() and school_code != 'CUSTOM':
                 school = School.objects.filter(code__iexact=school_code.strip()).first()
+            if not school and institution_name and institution_name.strip():
+                school = School.objects.filter(name__iexact=institution_name.strip()).first()
+                if not school:
+                    import uuid
+                    base_code = "".join(c for c in institution_name.upper() if c.isalnum())[:8] or "SCH"
+                    unique_suffix = uuid.uuid4().hex[:4].upper()
+                    code_candidate = f"{base_code}-{unique_suffix}"
+                    while School.objects.filter(code=code_candidate).exists():
+                        unique_suffix = uuid.uuid4().hex[:4].upper()
+                        code_candidate = f"{base_code}-{unique_suffix}"
+                    school = School.objects.create(
+                        name=institution_name.strip(),
+                        code=code_candidate,
+                        city=institution_city.strip() if institution_city else 'National',
+                        board=board if board else School.BoardChoice.FBISE_ISLAMABAD,
+                        contact_email=user.email,
+                        verified=False
+                    )
             
             student_name = name or f"{user.first_name} {user.last_name}".strip() or user.email.split('@')[0]
             Student.objects.create(
@@ -75,14 +93,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         elif user.role == User.Role.COUNSELOR:
             # Associate counselor with their designated institution
             target_school = None
-            if school_code:
+            if school_code and school_code.strip() and school_code != 'CUSTOM':
                 target_school = School.objects.filter(code__iexact=school_code.strip()).first()
-            if not target_school and institution_name:
+            if not target_school and institution_name and institution_name.strip():
                 target_school = School.objects.filter(name__iexact=institution_name.strip()).first()
                 if not target_school:
                     # Create school record for this new institution
+                    import uuid
                     base_code = "".join(c for c in institution_name.upper() if c.isalnum())[:8] or "SCH"
-                    code_candidate = f"{base_code}-{str(user.id)[:6].upper()}"
+                    unique_suffix = uuid.uuid4().hex[:4].upper()
+                    code_candidate = f"{base_code}-{unique_suffix}"
+                    while School.objects.filter(code=code_candidate).exists():
+                        unique_suffix = uuid.uuid4().hex[:4].upper()
+                        code_candidate = f"{base_code}-{unique_suffix}"
                     target_school = School.objects.create(
                         name=institution_name.strip(),
                         code=code_candidate,

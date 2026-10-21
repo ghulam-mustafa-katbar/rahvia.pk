@@ -185,6 +185,20 @@ export const StudentProfileView = () => {
                 <option value="FA_HUMANITIES">FA Humanities & Arts</option>
               </select>
             </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                {isUrdu ? 'تعلیمی ادارہ (اسکول یا کالج)' : 'Educational Institution (School / College)'}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profile.school_name || (isUrdu ? 'آزاد امیدوار / کوئی اسکول منسلک نہیں' : 'Independent Candidate / Unaffiliated')}
+                  disabled
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-sm font-medium"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
